@@ -1,0 +1,19 @@
+# Tag js-vX.Y.Z → publish `kotecharts`; tag mcp-vX.Y.Z → publish `kotecharts-mcp`.
+# npm trusted publishing (OIDC) or the NPM_TOKEN secret; provenance is attached.
+name: release-npm
+on:
+  push: { tags: ['js-v*', 'mcp-v*'] }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions: { id-token: write, contents: read }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
+      - name: Pick package
+        run: echo "PKG_DIR=$([[ '${{ github.ref_name }}' == mcp-v* ]] && echo mcp-proxy || echo typescript)" >> "$GITHUB_ENV"
+      - run: npm ci && npm publish --provenance --access public
+        working-directory: ${{ env.PKG_DIR }}
+        env: { NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}' }

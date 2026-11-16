@@ -1,0 +1,23 @@
+# Weekly smoke test against production + docs drift check: the generated docs
+# must match what the live servers answer.
+name: contract
+on:
+  schedule: [{ cron: '17 6 * * 1' }]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Keyless metric catalog
+        run: curl -fsS https://kotecharts.com/api/v1/metrics/mvrv-z-score | jq -e '.data.formula and (.data.fields | length > 0)'
+      - name: MCP initialize + tools/list
+        run: |
+          curl -fsS -X POST https://kotecharts.com/api/v1/mcp \
+            -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | jq -e '.result.tools | length == 4'
+      - name: Docs are up to date
+        run: node scripts/sync-docs.mjs --check

@@ -1,0 +1,19 @@
+# Tag py-vX.Y.Z → build and publish `kotecharts` to PyPI via trusted publishing
+# (PyPI project → Publishing → GitHub: kote-charts/kote-charts, workflow release-python.yml, env pypi).
+name: release-python
+on:
+  push: { tags: ['py-v*'] }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions: { id-token: write, contents: read }
+    defaults: { run: { working-directory: python } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install build pytest -e ".[pandas]" && pytest -q
+      - run: python -m build
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with: { packages-dir: python/dist }

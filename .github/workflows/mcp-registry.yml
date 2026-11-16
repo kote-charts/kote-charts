@@ -1,0 +1,19 @@
+# Tag registry-vX.Y.Z → publish server.json to the official MCP Registry as
+# com.kotecharts/charts. Domain proof: https://kotecharts.com/.well-known/mcp-registry-auth
+# holds the public key; the private key is the MCP_PRIVATE_KEY secret (hex).
+name: mcp-registry
+on:
+  push: { tags: ['registry-v*'] }
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          sudo mv mcp-publisher /usr/local/bin/
+      - run: mcp-publisher login http --domain kotecharts.com --private-key "${{ secrets.MCP_PRIVATE_KEY }}" --algorithm ecdsap384
+      - run: mcp-publisher validate && mcp-publisher publish

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kotecharts"
+dynamic = ["version"]
+description = "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "Kote Charts" }]
+keywords = ["bitcoin", "on-chain", "onchain-analytics", "mvrv", "nupl", "sopr", "crypto", "api", "mcp"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Typing :: Typed",
+]
+dependencies = ["httpx>=0.24,<1"]
+
+[project.optional-dependencies]
+pandas = ["pandas>=1.5"]
+
+[project.urls]
+Homepage = "https://kotecharts.com"
+Documentation = "https://kotecharts.com/docs"
+Repository = "https://github.com/kote-charts/kote-charts"
+Methodology = "https://kotecharts.com/methodology"
+Issues = "https://github.com/kote-charts/kote-charts/issues"
+
+[tool.hatch.version]
+path = "src/kotecharts/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kotecharts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"

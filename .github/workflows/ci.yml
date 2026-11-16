@@ -1,0 +1,36 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+permissions: { contents: read }
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { python: ['3.9', '3.11', '3.13'] }
+    defaults: { run: { working-directory: python } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ matrix.python }}' }
+      - run: pip install -e ".[pandas]" pytest
+      - run: pytest -q
+  typescript:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: typescript } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: typescript/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck && npm test && npm run build
+  mcp-proxy:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: mcp-proxy } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: mcp-proxy/package-lock.json }
+      - run: npm ci && npm run build
+      - run: npm test
+        env: { KOTE_MCP_URL: https://kotecharts.com/api/v1/mcp }

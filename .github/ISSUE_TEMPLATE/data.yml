@@ -1,0 +1,16 @@
+name: Data question / metric request
+description: A value looks wrong, or you would like a new metric
+labels: [data]
+body:
+  - type: input
+    id: chart
+    attributes:
+      label: Chart id
+      placeholder: e.g. exchange-netflow
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Dates, values you expected and why, or the metric you would like (with a reference).
+    validations:
+      required: true
