@@ -14,6 +14,18 @@ jobs:
         with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
       - name: Pick package
         run: echo "PKG_DIR=$([[ '${{ github.ref_name }}' == mcp-v* ]] && echo mcp-proxy || echo typescript)" >> "$GITHUB_ENV"
-      - run: npm ci && npm publish --provenance --access public
+      # The tag must match package.json; a version already on npm (e.g. one
+      # published by hand) is skipped so the tag still gets its GitHub Release.
+      - name: Check tag and npm
+        id: check
+        working-directory: ${{ env.PKG_DIR }}
+        run: |
+          name=$(node -p "require('./package.json').name"); version=$(node -p "require('./package.json').version")
+          [[ "${GITHUB_REF_NAME#*-v}" == "$version" ]] || { echo "::error::tag ${GITHUB_REF_NAME} != $name@$version"; exit 1; }
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "::notice::$name@$version is already on npm — skipping publish"
+          fi
+      - if: steps.check.outputs.skip != 'true'
+        run: npm ci && npm publish --provenance --access public
         working-directory: ${{ env.PKG_DIR }}
         env: { NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}' }

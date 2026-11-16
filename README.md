@@ -1,5 +1,13 @@
 # Kote Charts — Free Bitcoin On-Chain Analytics API & MCP Server
 
+[![PyPI](https://img.shields.io/pypi/v/kotecharts?label=PyPI%20kotecharts)](https://pypi.org/project/kotecharts/)
+[![npm](https://img.shields.io/npm/v/kotecharts?label=npm%20kotecharts)](https://www.npmjs.com/package/kotecharts)
+[![npm MCP proxy](https://img.shields.io/npm/v/kotecharts-mcp?label=npm%20kotecharts-mcp)](https://www.npmjs.com/package/kotecharts-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP%20Registry-com.kotecharts%2Fcharts-blue)](https://registry.modelcontextprotocol.io/v0.1/servers?search=com.kotecharts/charts)
+[![Kote Charts MCP connector](https://glama.ai/mcp/connectors/com.kotecharts/charts/badges/score.svg)](https://glama.ai/mcp/connectors/com.kotecharts/charts)
+[![CI](https://github.com/kote-charts/kote-charts/actions/workflows/ci.yml/badge.svg)](https://github.com/kote-charts/kote-charts/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
+
 **110+ charts, history since 2009: MVRV, NUPL, SOPR, exchange flows and whale analytics** —
 computed from our own Bitcoin full node, free, with a public REST API, a keyless MCP server for
 AI agents, and machine-readable methodology for every metric.
