@@ -9,7 +9,7 @@ description = "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOP
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [{ name = "Kote Charts" }]
 keywords = ["bitcoin", "on-chain", "onchain-analytics", "mvrv", "nupl", "sopr", "crypto", "api", "mcp"]
 classifiers = [
@@ -46,4 +46,4 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py39"
+target-version = "py310"
