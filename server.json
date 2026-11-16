@@ -3,7 +3,7 @@
   "name": "com.kotecharts/charts",
   "title": "Kote Charts — Bitcoin on-chain analytics",
   "description": "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "websiteUrl": "https://kotecharts.com/mcp",
   "repository": {
     "url": "https://github.com/kote-charts/kote-charts",
