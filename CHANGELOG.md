@@ -11,3 +11,5 @@
   `kote://charts/{id}`, `kote://catalog`, `kote://methodology`; prompts `explain_metric`,
   `cycle_position_brief`.
 - Machine-readable methodology: `GET /api/v1/metrics` (no key).
+- Official MCP Registry: `com.kotecharts/charts` 1.1.0 (remote) and 1.1.1 (+ repository) published;
+  1.1.2 adds the `kotecharts-mcp` npm package once it is on npm.
