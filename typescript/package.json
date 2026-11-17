@@ -1,11 +1,28 @@
 {
   "name": "kotecharts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
-  "keywords": ["bitcoin", "on-chain", "onchain-analytics", "mvrv", "nupl", "sopr", "crypto", "api", "sdk", "mcp"],
+  "keywords": [
+    "bitcoin",
+    "on-chain",
+    "onchain-analytics",
+    "mvrv",
+    "nupl",
+    "sopr",
+    "crypto",
+    "api",
+    "sdk",
+    "mcp"
+  ],
   "homepage": "https://kotecharts.com",
-  "repository": { "type": "git", "url": "git+https://github.com/kote-charts/kote-charts.git", "directory": "typescript" },
-  "bugs": { "url": "https://github.com/kote-charts/kote-charts/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kote-charts/kote-charts.git",
+    "directory": "typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/kote-charts/kote-charts/issues"
+  },
   "license": "MIT",
   "author": "Kote Charts",
   "type": "module",
@@ -15,12 +32,24 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
-  "engines": { "node": ">=18" },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsup",
     "test": "vitest run",

@@ -1,5 +1,5 @@
 # Tag js-vX.Y.Z → publish `kotecharts`; tag mcp-vX.Y.Z → publish `kotecharts-mcp`.
-# npm trusted publishing (OIDC) or the NPM_TOKEN secret; provenance is attached.
+# Publishes via npm Trusted Publishing (OIDC); provenance is attached.
 name: release-npm
 on:
   push: { tags: ['js-v*', 'mcp-v*'] }
@@ -25,7 +25,11 @@ jobs:
           if npm view "$name@$version" version >/dev/null 2>&1; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "::notice::$name@$version is already on npm — skipping publish"
           fi
+      # npm Trusted Publishing (OIDC, configured on npmjs.com for both packages:
+      # repo kote-charts/kote-charts, workflow release-npm.yml, environment npm)
+      # needs npm CLI >= 11.5.1 — Node 22 ships npm 10. No token is stored anywhere.
+      - if: steps.check.outputs.skip != 'true'
+        run: npm install -g npm@^11.5.1 && npm --version
       - if: steps.check.outputs.skip != 'true'
         run: npm ci && npm publish --provenance --access public
         working-directory: ${{ env.PKG_DIR }}
-        env: { NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}' }

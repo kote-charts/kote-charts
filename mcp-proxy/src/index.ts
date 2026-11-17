@@ -24,7 +24,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.1';
 export const DEFAULT_URL = 'https://kotecharts.com/api/v1/mcp';
 
 export function remoteHeaders(env: NodeJS.ProcessEnv): Record<string, string> {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-17
+
+- `kotecharts` 0.1.1 and `kotecharts-mcp` 0.1.1 (npm): the bundled LICENSE is now the canonical MIT
+  text (the code/data note lives in the README and DATA-LICENSE.md). First releases published from
+  GitHub Actions via npm Trusted Publishing, with provenance.
+
 ## 2026-11-16
 
 - First public release of the Kote Charts developer kit.

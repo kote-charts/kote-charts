@@ -1,18 +1,42 @@
 {
   "name": "kotecharts-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Free Bitcoin on-chain analytics MCP server (stdio) — MVRV, NUPL, SOPR, exchange flows, whales",
   "mcpName": "com.kotecharts/charts",
-  "keywords": ["mcp", "model-context-protocol", "mcp-server", "bitcoin", "on-chain", "mvrv", "nupl", "sopr", "ai-agents"],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "bitcoin",
+    "on-chain",
+    "mvrv",
+    "nupl",
+    "sopr",
+    "ai-agents"
+  ],
   "homepage": "https://kotecharts.com/mcp",
-  "repository": { "type": "git", "url": "git+https://github.com/kote-charts/kote-charts.git", "directory": "mcp-proxy" },
-  "bugs": { "url": "https://github.com/kote-charts/kote-charts/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kote-charts/kote-charts.git",
+    "directory": "mcp-proxy"
+  },
+  "bugs": {
+    "url": "https://github.com/kote-charts/kote-charts/issues"
+  },
   "license": "MIT",
   "author": "Kote Charts",
   "type": "module",
-  "bin": { "kotecharts-mcp": "dist/index.js" },
-  "files": ["dist", "README.md", "LICENSE"],
-  "engines": { "node": ">=18" },
+  "bin": {
+    "kotecharts-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
     "start": "node dist/index.js",
