@@ -61,6 +61,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Liveness of the API and its database (no key)
+         * @description Answers 200 {"success":true,"data":{"status":"ok"}} when the API can reach its charts database, 503 with the error envelope otherwise. Cheap — safe for uptime monitors.
+         */
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Service status and data freshness (no key)
+         * @description Overall level (operational | degraded | outage), per-component status (api, database, mcp, dataPipeline with the analysed block height and its age, replication = delivery from the processing database), public chart counts with the list of stale charts, the data window and interface versions. Only api/database can make the service an outage; late data degrades it. Cached for 30 seconds.
+         */
+        get: operations["getStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/metrics": {
         parameters: {
             query?: never;
@@ -163,6 +203,13 @@ export interface components {
                 /** @example 3 */
                 perSecond?: number;
             };
+            /**
+             * Format: uri
+             * @description Data licence (non-commercial use with attribution).
+             */
+            license?: string;
+            /** @description How to credit the data; what needs permission. */
+            attribution?: string;
         };
         /** @description One point of a time series: `t` plus one numeric field per series (field names and units per chart: GET /api/v1/metrics/{id} → fields). `null` = no value for that day. */
         SeriesPoint: {
@@ -201,6 +248,18 @@ export interface components {
             }[];
             partialAvailable?: boolean;
             includesPartial?: boolean;
+            /**
+             * Format: uri
+             * @description Human chart page — link it when citing.
+             */
+            pageUrl?: string;
+            /** @description Ready-made attribution line. */
+            cite?: string;
+            /**
+             * Format: uri
+             * @description Data licence (non-commercial use with attribution).
+             */
+            license?: string;
         } & {
             [key: string]: unknown;
         };
@@ -272,7 +331,10 @@ export interface components {
             metricUrl?: string;
             /** Format: uri */
             methodologyUrl?: string;
-            /** Format: uri */
+            /**
+             * Format: uri
+             * @description Data licence (non-commercial use with attribution).
+             */
             license?: string;
             /** @description Ready-made attribution line. */
             cite: string;
@@ -303,10 +365,89 @@ export interface components {
             };
             metrics: components["schemas"]["Metric"][];
         };
+        Health: {
+            /** @enum {string} */
+            status: "ok";
+        };
+        /**
+         * @description operational = working as designed; degraded = serving, but data is late or a part is slow; outage = the API cannot serve data.
+         * @enum {string}
+         */
+        StatusLevel: "operational" | "degraded" | "outage";
+        /** @description api / database / mcp; dataPipeline = on-chain processing (analysedBlockHeight, processedAt, ageMinutes) and public chart freshness; replication = delivery from the processing database to the serving one (lastReceivedAt, ageMinutes) — present only where it applies. */
+        StatusComponent: {
+            /** @enum {string} */
+            id: "api" | "database" | "mcp" | "dataPipeline" | "replication";
+            status: components["schemas"]["StatusLevel"];
+            latencyMs?: number;
+            analysedBlockHeight?: number | null;
+            /** Format: date-time */
+            processedAt?: string | null;
+            /** Format: date-time */
+            lastReceivedAt?: string | null;
+            ageMinutes?: number | null;
+        };
+        Status: {
+            /** Format: date-time */
+            generatedAt: string;
+            overall: components["schemas"]["StatusLevel"];
+            components: components["schemas"]["StatusComponent"][];
+            charts: {
+                /** @description Public charts — the same number as GET /api/v1/metrics `total`. */
+                public: number;
+                categories: number;
+                fresh: number;
+                stale: number;
+                /** @description Charts behind their update cadence (at most 25 listed). */
+                staleCharts: {
+                    id: string;
+                    lastT?: string | null;
+                    /** Format: date-time */
+                    publishedAt?: string | null;
+                }[];
+            };
+            dataWindow?: {
+                /** Format: date */
+                minDate?: string | null;
+                /** Format: date */
+                maxDate?: string | null;
+            } | null;
+            versions: {
+                /** @example 1.2.0 */
+                api: string;
+                /** @example 1.2.0 */
+                mcp?: string | null;
+                /**
+                 * Format: date-time
+                 * @description When this API process started (≈ last deploy).
+                 */
+                startedAt: string;
+            };
+            links?: {
+                /** Format: uri */
+                statusPage?: string;
+                /** Format: uri */
+                changelog?: string;
+                /** Format: uri */
+                uptimeHistory?: string;
+                /** Format: uri */
+                license?: string;
+            };
+        };
         ChartCatalogEnvelope: {
             /** @enum {boolean} */
             success: true;
             data: components["schemas"]["ChartCatalog"];
+        };
+        HealthEnvelope: {
+            /** @enum {boolean} */
+            success: true;
+            data: components["schemas"]["Health"];
+        };
+        StatusEnvelope: {
+            /** @enum {boolean} */
+            success: true;
+            data: components["schemas"]["Status"];
         };
         MetricEnvelope: {
             /** @enum {boolean} */
@@ -355,7 +496,7 @@ export interface operations {
                     "application/json": components["schemas"]["ChartCatalogEnvelope"];
                 };
             };
-            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (free key on /account). */
+            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (create a key on /account). */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -438,7 +579,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (free key on /account). */
+            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (create a key on /account). */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -502,7 +643,7 @@ export interface operations {
                     "application/json": components["schemas"]["UsageEnvelope"];
                 };
             };
-            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (free key on /account). */
+            /** @description Missing or invalid key — send X-API-Key or Authorization: Bearer kote_… (create a key on /account). */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -536,6 +677,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    getHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthEnvelope"];
+                };
+            };
+            /** @description The charts database is unreachable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    getStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatusEnvelope"];
                 };
             };
         };

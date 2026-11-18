@@ -3,7 +3,7 @@
 # Metric catalog (114 public charts)
 
 Machine-readable version (live freshness included): `GET https://kotecharts.com/api/v1/metrics` — no key.
-Per metric: `GET /api/v1/metrics/{id}`. Data: `GET /api/v1/public/charts/{id}` (free key) or MCP `get_chart`.
+Per metric: `GET /api/v1/metrics/{id}`. Data: `GET /api/v1/public/charts/{id}` (API key) or MCP `get_chart`.
 
 ## Input categories
 

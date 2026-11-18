@@ -2,17 +2,19 @@
 
 # REST API reference
 
-Free Bitcoin On-Chain Analytics API & MCP Server — 110+ charts, history since 2009: MVRV, NUPL, SOPR, exchange flows and whale analytics. Computed from our own Bitcoin full node and updated daily (selected on-chain metrics per block). Authenticate with a free API key — header X-API-Key: kote_… or Authorization: Bearer kote_… (create one at https://kotecharts.com/account); limit 3 requests per second per key — every response carries X-RateLimit-Limit / X-RateLimit-Remaining, a 429 adds Retry-After. Every response uses the envelope {"success":true,"data":{...}} or {"success":false,"error":{"code","message"}}. AI agents can also use the MCP server at https://kotecharts.com/api/v1/mcp (no key required) — see https://kotecharts.com/mcp. Data is free for non-commercial use with attribution: please cite Kote Charts and link the chart page https://kotecharts.com/c/{id}. Educational only — never financial advice.
+Bitcoin On-Chain Analytics API & MCP Server — 110+ charts, history since 2009: MVRV, NUPL, SOPR, exchange flows and whale analytics. Computed from our own Bitcoin full node and updated daily (selected on-chain metrics per block). Authenticate with an API key (no charge) — header X-API-Key: kote_… or Authorization: Bearer kote_… (create one at https://kotecharts.com/account); limit 3 requests per second per key — every response carries X-RateLimit-Limit / X-RateLimit-Remaining, a 429 adds Retry-After. Every response uses the envelope {"success":true,"data":{...}} or {"success":false,"error":{"code","message"}}. AI agents can also use the MCP server at https://kotecharts.com/api/v1/mcp (no key required) — see https://kotecharts.com/mcp. Live service status: GET https://kotecharts.com/api/v1/status (no key) and https://kotecharts.com/status. Licence: Non-commercial use only, with attribution: cite "Kote Charts" and link the chart page https://kotecharts.com/c/{id}. Commercial use requires prior written permission — https://kotecharts.com/license. Every response carries Link: <https://kotecharts.com/license>; rel="license". Educational only — never financial advice.
 
 OpenAPI 3 document: [`https://kotecharts.com/api/v1/openapi.json`](https://kotecharts.com/api/v1/openapi.json) · human docs: https://kotecharts.com/docs
 
 | Method | Path | operationId | Auth | Summary |
 |---|---|---|---|---|
+| GET | `/api/v1/health` | `getHealth` | none | Liveness of the API and its database (no key) |
 | GET | `/api/v1/metrics` | `listMetrics` | none | Machine-readable methodology for every public chart (no key) |
 | GET | `/api/v1/metrics/{id}` | `getMetric` | none | Machine-readable methodology for one chart (no key) |
-| GET | `/api/v1/public/charts` | `listCharts` | free key | Chart catalog: data window + per-chart published-version index |
-| GET | `/api/v1/public/charts/{id}` | `getChart` | free key | Published payload for a chart (same shape as the dashboard uses) |
-| GET | `/api/v1/public/usage` | `getUsage` | free key | Self-service usage: today's counters + the limit |
+| GET | `/api/v1/public/charts` | `listCharts` | API key | Chart catalog: data window + per-chart published-version index |
+| GET | `/api/v1/public/charts/{id}` | `getChart` | API key | Published payload for a chart (same shape as the dashboard uses) |
+| GET | `/api/v1/public/usage` | `getUsage` | API key | Self-service usage: today's counters + the limit |
+| GET | `/api/v1/status` | `getStatus` | none | Service status and data freshness (no key) |
 
 ## Query parameters of `getChart`
 
