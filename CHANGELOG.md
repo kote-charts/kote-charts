@@ -10,7 +10,7 @@ data corrections, methodology, incidents — is listed at https://kotecharts.com
   `tools/call` and reads of `kote://charts/{id}`. The handshake and discovery requests (`initialize`,
   `tools/list`, `resources/list`, prompts, `ping`) have their own allowance and are not counted
   against it; each message of a JSON-RPC batch counts separately. With an API key: 3 requests per
-  second, as before. MCP Registry `com.kotecharts/charts` 1.2.1 (pins `kotecharts-mcp` 0.1.3).
+  second, as before. MCP Registry `com.kotecharts/charts` 1.2.1 (the `kotecharts-mcp` pin stays at 0.1.0).
 - `kotecharts` 0.2.1 (Python, npm): a 429 / 503 whose `Retry-After` is longer than 30 s is raised at
   once instead of being slept through and retried; the hint is available as `retry_after` /
   `retryAfter` on 503 errors too.
