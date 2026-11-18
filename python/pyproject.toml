@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "kotecharts"
 dynamic = ["version"]
-description = "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales"
+description = "Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

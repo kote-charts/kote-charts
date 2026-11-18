@@ -90,7 +90,7 @@ def test_keyed_call_without_a_key_fails_before_any_request(monkeypatch: pytest.M
     def handler(req: httpx.Request) -> httpx.Response:  # pragma: no cover - must not be called
         raise AssertionError("no request expected")
 
-    with pytest.raises(KoteChartsError, match="free API key"):
+    with pytest.raises(KoteChartsError, match="needs an API key"):
         client(handler, api_key=None).charts()
 
 

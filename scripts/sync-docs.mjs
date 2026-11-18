@@ -49,7 +49,7 @@ const { prompts } = await rpc('prompts/list');
 const mcp = [header('MCP server reference')];
 mcp.push(
   `- **Endpoint:** \`POST ${PUBLIC}/api/v1/mcp\` — Streamable HTTP, stateless, JSON responses.`,
-  '- **Auth:** none required (60 requests/minute per IP). Optional free key as `Authorization: Bearer kote_…` → 3 requests/second.',
+  '- **Auth:** none required (60 requests/minute per IP). Optional API key as `Authorization: Bearer kote_…` → 3 requests/second.',
   '- **Headers:** clients must send `Accept: application/json, text/event-stream`.',
   `- **Server:** \`${init.serverInfo.name}\` ${init.serverInfo.version} — ${init.serverInfo.title ?? ''}`,
   '- **Registry:** `com.kotecharts/charts` (official MCP Registry). stdio bridge: `npx -y kotecharts-mcp`.',
@@ -104,7 +104,7 @@ for (const m of catalog.metrics) {
 const metrics = [header(`Metric catalog (${catalog.total} public charts)`)];
 metrics.push(
   `Machine-readable version (live freshness included): \`GET ${PUBLIC}/api/v1/metrics\` — no key.`,
-  'Per metric: `GET /api/v1/metrics/{id}`. Data: `GET /api/v1/public/charts/{id}` (free key) or MCP `get_chart`.',
+  'Per metric: `GET /api/v1/metrics/{id}`. Data: `GET /api/v1/public/charts/{id}` (API key) or MCP `get_chart`.',
   '',
   '## Input categories',
   '',
@@ -139,7 +139,7 @@ rest.push(
 );
 for (const [path, item] of Object.entries(oa.paths).sort()) {
   for (const [method, op] of Object.entries(item)) {
-    const auth = op.security?.length ? 'free key' : 'none';
+    const auth = op.security?.length ? 'API key' : 'none';
     rest.push(`| ${method.toUpperCase()} | \`${path}\` | \`${op.operationId}\` | ${auth} | ${md(op.summary)} |`);
   }
 }

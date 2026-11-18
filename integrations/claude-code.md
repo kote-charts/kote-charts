@@ -4,7 +4,7 @@
 claude mcp add --transport http kote-charts https://kotecharts.com/api/v1/mcp
 ```
 
-With a free key (higher limit):
+With an API key (higher limit):
 
 ```bash
 claude mcp add --transport http kote-charts https://kotecharts.com/api/v1/mcp \

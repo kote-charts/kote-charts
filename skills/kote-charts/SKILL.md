@@ -30,7 +30,9 @@ description: Answer questions about Bitcoin on-chain metrics (MVRV, MVRV Z-Score
 - Mention relevant limitations (entity labels are heuristic; on-chain data cannot see trades inside
   exchanges).
 - Educational only: describe what the metric shows; never give buy/sell advice or price targets.
-- Data is free for non-commercial use with attribution.
+- Licence: non-commercial use only, with attribution (cite "Kote Charts" and link the chart
+  page); commercial use requires prior written permission — https://kotecharts.com/license.
+  If the user is building a commercial product on the data, tell them so.
 
 ## Good starting metrics
 

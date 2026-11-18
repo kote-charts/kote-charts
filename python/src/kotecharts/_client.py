@@ -122,7 +122,7 @@ class _Base:
         if keyed:
             if not self.api_key:
                 raise KoteChartsError(
-                    "This endpoint needs a free API key: pass api_key=... or set KOTE_API_KEY "
+                    "This endpoint needs an API key: pass api_key=... or set KOTE_API_KEY "
                     "(create one at https://kotecharts.com/account).",
                     status=401,
                     code="UNAUTHORIZED",
@@ -139,8 +139,9 @@ class KoteCharts(_Base):
     >>> kc.metric("mvrv-z-score")["formula"]  # no key needed
     >>> kc.chart("mvrv-z-score", start="2024-01-01", granularity="week").to_pandas()
 
-    Data is free for non-commercial use with attribution: cite "Kote Charts" and
-    link https://kotecharts.com/c/{id}. Educational only — not financial advice.
+    Data licence: non-commercial use only, with attribution — cite "Kote Charts"
+    and link https://kotecharts.com/c/{id}; commercial use requires prior written
+    permission (https://kotecharts.com/license). Educational only — not financial advice.
     """
 
     def __init__(

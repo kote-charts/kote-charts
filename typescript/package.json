@@ -1,7 +1,7 @@
 {
   "name": "kotecharts",
-  "version": "0.1.1",
-  "description": "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
+  "version": "0.2.0",
+  "description": "Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
   "keywords": [
     "bitcoin",
     "on-chain",

@@ -1,23 +1,34 @@
-# Weekly smoke test against production + docs drift check: the generated docs
-# must match what the live servers answer.
+# Public contract tests against production — keyless, read-only, reproducible
+# by anyone with `node --test contract/*.test.mjs` (Node ≥ 20, no dependencies).
+# They check the OpenAPI schemas against real responses, the keyless health /
+# status / metric endpoints, data freshness, the licence on every response, the
+# MCP server, and that the site, the API and MCP agree on ONE public chart count.
+# Daily + on every push + on demand. The docs drift check (generated docs must
+# match the live servers) runs weekly and on demand.
 name: contract
 on:
-  schedule: [{ cron: '17 6 * * 1' }]
+  schedule:
+    - cron: '17 6 * * *' # daily: live contract
+    - cron: '23 6 * * 1' # Mondays: docs drift
+  push: { branches: [main] }
   workflow_dispatch:
 permissions: { contents: read }
 jobs:
   live:
+    if: github.event.schedule != '23 6 * * 1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - name: Keyless metric catalog
-        run: curl -fsS https://kotecharts.com/api/v1/metrics/mvrv-z-score | jq -e '.data.formula and (.data.fields | length > 0)'
-      - name: MCP initialize + tools/list
-        run: |
-          curl -fsS -X POST https://kotecharts.com/api/v1/mcp \
-            -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
-            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | jq -e '.result.tools | length == 4'
+      - name: Public contract tests (https://kotecharts.com)
+        run: node --test --test-reporter=spec contract/*.test.mjs
+  docs:
+    if: github.event.schedule == '23 6 * * 1' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
       - name: Docs are up to date
         run: node scripts/sync-docs.mjs --check

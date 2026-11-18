@@ -19,7 +19,7 @@ plus a stdio bridge (`npx -y kotecharts-mcp`) for clients that only run local se
 | LlamaIndex | [llamaindex.md](llamaindex.md) |
 | Vercel AI SDK | [vercel-ai-sdk.md](vercel-ai-sdk.md) |
 
-**Limits:** 60 requests/minute per IP without a key. With a free key (`kote_…`, from
+**Limits:** 60 requests/minute per IP without a key. With an API key (`kote_…`, from
 https://kotecharts.com/account) send `Authorization: Bearer kote_…` for 3 requests/second.
 
 **What the agent gets:** tools `list_charts`, `describe_chart`, `get_chart`, `get_latest`;

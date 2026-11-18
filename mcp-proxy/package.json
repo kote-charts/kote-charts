@@ -1,7 +1,7 @@
 {
   "name": "kotecharts-mcp",
-  "version": "0.1.1",
-  "description": "Free Bitcoin on-chain analytics MCP server (stdio) — MVRV, NUPL, SOPR, exchange flows, whales",
+  "version": "0.1.2",
+  "description": "Bitcoin on-chain analytics MCP server (stdio) — MVRV, NUPL, SOPR, exchange flows, whales",
   "mcpName": "com.kotecharts/charts",
   "keywords": [
     "mcp",

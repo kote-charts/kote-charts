@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.kotecharts/charts",
   "title": "Kote Charts — Bitcoin on-chain analytics",
-  "description": "Free Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
-  "version": "1.1.2",
+  "description": "Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
+  "version": "1.2.0",
   "websiteUrl": "https://kotecharts.com/mcp",
   "repository": {
     "url": "https://github.com/kote-charts/kote-charts",
@@ -24,7 +24,7 @@
       "environmentVariables": [
         {
           "name": "KOTE_API_KEY",
-          "description": "Optional free API key (kote_…) for 3 requests/second instead of 60/minute per IP",
+          "description": "Optional API key (kote_…, no charge) for 3 requests/second instead of 60/minute per IP",
           "isRequired": false,
           "isSecret": true
         }

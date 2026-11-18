@@ -1,4 +1,4 @@
-"""Kote Charts — free Bitcoin on-chain analytics API & MCP server.
+"""Kote Charts — Bitcoin on-chain analytics API & MCP server.
 
 MVRV, NUPL, SOPR, exchange flows and whale analytics with history since 2009,
 computed from our own Bitcoin full node. https://kotecharts.com

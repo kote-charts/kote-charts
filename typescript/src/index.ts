@@ -1,9 +1,10 @@
-// Kote Charts — free Bitcoin on-chain analytics API & MCP server.
+// Kote Charts — Bitcoin on-chain analytics API & MCP server.
 // Zero-dependency client over native fetch (Node 18+, browsers, Deno, Bun).
 // Types come from the public OpenAPI document (src/openapi.ts, `npm run gen:types`).
 //
-// Data is free for non-commercial use with attribution: cite "Kote Charts" and
-// link https://kotecharts.com/c/{id}. Educational only — not financial advice.
+// Data licence: non-commercial use only, with attribution — cite "Kote Charts" and
+// link https://kotecharts.com/c/{id}; commercial use requires prior written permission
+// (https://kotecharts.com/license). Educational only — not financial advice.
 import type { components } from './openapi';
 
 type Schemas = components['schemas'];
@@ -29,11 +30,11 @@ export type MetricCatalog = Schemas['MetricCatalog'];
 export type ApiErrorBody = Schemas['ApiError'];
 export type { components, paths } from './openapi';
 
-export const VERSION = '0.1.1';
+export const VERSION = '0.2.0';
 export const DEFAULT_BASE_URL = 'https://kotecharts.com';
 
 export interface KoteChartsOptions {
-  /** Free API key (kote_…). Falls back to process.env.KOTE_API_KEY. Not needed for metrics(). */
+  /** API key (kote_…). Falls back to process.env.KOTE_API_KEY. Not needed for metrics(). */
   apiKey?: string;
   /** Defaults to https://kotecharts.com (or process.env.KOTE_BASE_URL). */
   baseUrl?: string;
@@ -171,7 +172,7 @@ export class KoteCharts {
     if (keyed) {
       if (!this.apiKey) {
         throw new KoteChartsError(
-          'This endpoint needs a free API key: new KoteCharts({ apiKey }) or KOTE_API_KEY ' +
+          'This endpoint needs an API key: new KoteCharts({ apiKey }) or KOTE_API_KEY ' +
             '(create one at https://kotecharts.com/account).',
           { status: 401, code: 'UNAUTHORIZED' },
         );

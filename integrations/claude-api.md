@@ -65,6 +65,6 @@ if (response.stop_reason === 'refusal') {
 }
 ```
 
-With a free key, add `"authorization_token": "kote_your_key"` to the `mcp_servers` entry for the
+With an API key, add `"authorization_token": "kote_your_key"` to the `mcp_servers` entry for the
 higher rate limit. Runnable versions: [`examples/python/claude_api_agent.py`](../examples/python/claude_api_agent.py),
 [`examples/typescript/claude-api-mcp.ts`](../examples/typescript/claude-api-mcp.ts).

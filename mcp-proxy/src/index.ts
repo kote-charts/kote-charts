@@ -5,7 +5,7 @@
 //
 //   npx -y kotecharts-mcp
 //
-// Env: KOTE_API_KEY (optional: free key → 3 req/s instead of 60 req/min per IP),
+// Env: KOTE_API_KEY (optional: an API key → 3 req/s instead of 60 req/min per IP),
 //      KOTE_MCP_URL  (optional: override the remote endpoint).
 //
 // Nothing is computed locally: tools, resources and prompts are whatever the
@@ -24,7 +24,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-export const VERSION = '0.1.1';
+export const VERSION = '0.1.2';
 export const DEFAULT_URL = 'https://kotecharts.com/api/v1/mcp';
 
 export function remoteHeaders(env: NodeJS.ProcessEnv): Record<string, string> {

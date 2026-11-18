@@ -35,7 +35,7 @@ class BadRequestError(KoteChartsError):
 
 
 class AuthenticationError(KoteChartsError):
-    """401 — missing or invalid API key. Create a free key at https://kotecharts.com/account."""
+    """401 — missing or invalid API key. Create a key at https://kotecharts.com/account."""
 
 
 class PermissionDeniedError(KoteChartsError):
