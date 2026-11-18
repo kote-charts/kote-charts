@@ -189,4 +189,4 @@ def test_base_url_override_and_trailing_slash() -> None:
 
 
 def test_version_is_exposed() -> None:
-    assert json.loads(json.dumps(kotecharts.__version__)) == "0.1.0"
+    assert json.loads(json.dumps(kotecharts.__version__)) == "0.2.0"
