@@ -3,11 +3,12 @@
 // They check what the documentation promises: the OpenAPI schemas match real
 // responses, the keyless endpoints answer, the data is fresh, the licence
 // travels with every response, and the site, the API and the MCP server agree
-// on ONE public chart count. MCP calls are keyless (60/min per IP) — the whole
-// suite makes well under 20.
+// on ONE public chart count. MCP calls are keyless (60 tool calls/min per IP;
+// the handshake and discovery requests are counted apart) — the whole suite
+// makes well under 20.
 import assert from 'node:assert/strict';
 import { before, describe, test } from 'node:test';
-import { BASE, chartCountLabel, get, mcp, toolJson, validate } from './lib.mjs';
+import { BASE, chartCountLabel, get, mcp, toolJson, USER_AGENT, validate } from './lib.mjs';
 
 const LICENSE_URL = 'https://kotecharts.com/license';
 const DAY_MS = 86_400_000;
@@ -116,6 +117,7 @@ describe('keyed REST API without a key', () => {
         origin: 'https://example.org',
         'access-control-request-method': 'GET',
         'access-control-request-headers': 'authorization',
+        'user-agent': USER_AGENT,
       },
       signal: AbortSignal.timeout(30_000),
     });
@@ -159,6 +161,25 @@ describe('MCP server (keyless)', () => {
     assert.equal(out.total, out.charts.length);
     assert.equal(out.total, metrics.data.total, 'list_charts vs /api/v1/metrics');
     assert.equal(out.total, status.data.charts.public, 'list_charts vs /api/v1/status');
+  });
+
+  // Documented limit: 60 TOOL CALLS per minute per IP without a key — session
+  // setup and discovery do not eat that budget. Three discovery requests between
+  // two tool calls must cost the tool-call budget nothing (the slack of 2 absorbs
+  // an unrelated caller behind the same address).
+  test('handshake and discovery are not charged against the tool-call budget', async () => {
+    const remaining = (r) => Number(r.res.headers.get('x-ratelimit-remaining'));
+    const call = () => mcp('tools/call', { name: 'get_latest', arguments: { id: 'nupl' } });
+    const before = await call();
+    assert.equal(before.res.status, 200);
+    for (let i = 0; i < 3; i += 1) assert.equal((await mcp('tools/list')).res.status, 200);
+    const after = await call();
+    assert.equal(after.res.status, 200);
+    assert.ok(Number.isFinite(remaining(before)) && Number.isFinite(remaining(after)), 'X-RateLimit-Remaining');
+    assert.ok(
+      remaining(after) >= remaining(before) - 3,
+      `tool-call budget went ${remaining(before)} → ${remaining(after)} across 3 discovery requests`,
+    );
   });
 });
 

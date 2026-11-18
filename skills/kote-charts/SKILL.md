@@ -12,6 +12,21 @@ description: Answer questions about Bitcoin on-chain metrics (MVRV, MVRV Z-Score
 - REST: `GET https://kotecharts.com/api/v1/public/charts/{id}` with `Authorization: Bearer kote_…`.
 - Methodology without a key: `GET https://kotecharts.com/api/v1/metrics/{id}`.
 
+Use only these documented interfaces. The requests the kotecharts.com website makes for its own
+pages are not a public API — do not call or scrape them; they are undocumented and limited
+separately.
+
+## Limits
+
+- MCP without a key: 60 tool calls per minute per IP (`tools/call` and reads of
+  `kote://charts/{id}`); the handshake and discovery requests are not counted against it. With an
+  API key: 3 requests per second. REST: 3 requests per second per key.
+- A refused request answers HTTP 429 (or 503 when the service is busy) with `Retry-After` — wait
+  that long and retry once; do not loop.
+- Spend calls deliberately: `get_latest` for a current value instead of a whole series, a coarser
+  `granularity` and a smaller `maxPoints` for long ranges, and reuse what was already fetched in
+  the conversation.
+
 ## Workflow
 
 1. Find the id: `list_charts` with a query ("mvrv", "exchange", "whale", "sopr").

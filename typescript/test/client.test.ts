@@ -107,6 +107,38 @@ describe('KoteCharts', () => {
   });
 });
 
+describe('Retry-After', () => {
+  it('throws at once when the requested wait is longer than the cap', async () => {
+    const { fn } = mockFetch(
+      json(429, { success: false, error: { code: 'RATE_LIMIT', message: 'later' } }, { 'retry-after': '3600' }),
+    );
+    // No fake timers: a retry would sleep 30 s and time the test out.
+    const err = await new KoteCharts({ fetch: fn, apiKey: KEY }).chart('mvrv-z-score').catch((e: unknown) => e);
+    expect(err).toMatchObject({ status: 429, retryAfter: 3600, code: 'RATE_LIMIT' });
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries a busy 503 after its Retry-After and exposes it when retries run out', async () => {
+    const busy = () =>
+      json(503, { success: false, error: { code: 'SERVICE_UNAVAILABLE', message: 'busy' } }, { 'retry-after': '2' });
+    vi.useFakeTimers();
+    try {
+      const { fn } = mockFetch(busy(), ok(SERIES));
+      const p = new KoteCharts({ fetch: fn, apiKey: KEY }).chart('mvrv-z-score');
+      await vi.advanceTimersByTimeAsync(2000);
+      expect((await p).chart).toBe('mvrv-z-score');
+      expect(fn).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+    const { fn } = mockFetch(busy());
+    const err = await new KoteCharts({ fetch: fn, apiKey: KEY, maxRetries: 0 })
+      .chart('mvrv-z-score')
+      .catch((e: unknown) => e);
+    expect(err).toMatchObject({ status: 503, retryAfter: 2, code: 'SERVICE_UNAVAILABLE' });
+  });
+});
+
 describe('helpers', () => {
   it('seriesFields lists numeric fields without t/partial', () => {
     expect(seriesFields(SERIES.series)).toEqual(['mvrvZ', 'usd']);

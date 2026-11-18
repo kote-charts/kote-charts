@@ -19,8 +19,10 @@ plus a stdio bridge (`npx -y kotecharts-mcp`) for clients that only run local se
 | LlamaIndex | [llamaindex.md](llamaindex.md) |
 | Vercel AI SDK | [vercel-ai-sdk.md](vercel-ai-sdk.md) |
 
-**Limits:** 60 requests/minute per IP without a key. With an API key (`kote_…`, from
+**Limits:** without a key, 60 tool calls per minute per IP — the handshake and discovery requests
+(`initialize`, `tools/list`, …) are not counted against it. With an API key (`kote_…`, from
 https://kotecharts.com/account) send `Authorization: Bearer kote_…` for 3 requests/second.
+A refused request answers HTTP 429 with `Retry-After`.
 
 **What the agent gets:** tools `list_charts`, `describe_chart`, `get_chart`, `get_latest`;
 resources `kote://charts/{id}`, `kote://catalog`, `kote://methodology`; prompts `explain_metric`,

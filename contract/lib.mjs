@@ -4,11 +4,14 @@
 
 export const BASE = (process.env.KOTE_BASE_URL ?? 'https://kotecharts.com').replace(/\/$/, '');
 export const MCP_URL = `${BASE}/api/v1/mcp`;
+// The suite names itself on every request, so the service can tell these checks
+// apart from real API and MCP usage.
+export const USER_AGENT = 'kote-charts-contract/1 (+https://github.com/kote-charts/kote-charts)';
 
 export async function get(path, init = {}) {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { accept: 'application/json', ...(init.headers ?? {}) },
+    headers: { accept: 'application/json', 'user-agent': USER_AGENT, ...(init.headers ?? {}) },
     signal: AbortSignal.timeout(30_000),
   });
   const text = await res.text();
@@ -22,12 +25,19 @@ export async function get(path, init = {}) {
 }
 
 let rpcId = 0;
-/** One stateless MCP JSON-RPC call (keyless — 60 requests/minute per IP; keep the suite small). */
+/**
+ * One stateless MCP JSON-RPC call. Keyless: 60 tool calls/minute per IP; the handshake
+ * and discovery requests have their own allowance — keep the suite small either way.
+ */
 export async function mcp(method, params = {}) {
   rpcId += 1;
   const res = await fetch(MCP_URL, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' },
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json, text/event-stream',
+      'user-agent': USER_AGENT,
+    },
     body: JSON.stringify({ jsonrpc: '2.0', id: rpcId, method, params }),
     signal: AbortSignal.timeout(30_000),
   });

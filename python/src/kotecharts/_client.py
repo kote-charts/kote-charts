@@ -11,7 +11,7 @@ from typing import Any, Dict, Mapping, Optional, Union
 
 import httpx
 
-from ._errors import APIConnectionError, KoteChartsError, RateLimitError, error_for_status
+from ._errors import APIConnectionError, KoteChartsError, error_for_status
 from ._models import ChartData
 from ._version import __version__
 
@@ -19,6 +19,10 @@ DEFAULT_BASE_URL = "https://kotecharts.com"
 DEFAULT_TIMEOUT = 30.0
 DEFAULT_MAX_RETRIES = 3
 _RETRY_STATUSES = {429, 502, 503, 504}
+# The longest server-requested wait (Retry-After, seconds) the client sleeps through by
+# itself. A longer hint is raised to the caller at once: retrying sooner cannot succeed,
+# and how long to wait is then the caller's decision (``error.retry_after``).
+MAX_RETRY_AFTER = 30.0
 
 DateLike = Union[str, date, datetime]
 
@@ -71,30 +75,36 @@ def _raise_for(response: httpx.Response) -> None:
         pass
     message = message or f"HTTP {response.status_code}"
     cls = error_for_status(response.status_code)
-    if cls is RateLimitError:
-        raise RateLimitError(
-            message,
-            retry_after=_retry_after(response),
-            status=response.status_code,
-            code=code,
-            request_id=request_id,
-        )
-    raise cls(message, status=response.status_code, code=code, request_id=request_id)
+    raise cls(
+        message,
+        status=response.status_code,
+        code=code,
+        request_id=request_id,
+        retry_after=_retry_after(response),
+    )
 
 
 def _retry_after(response: httpx.Response) -> Optional[float]:
     raw = response.headers.get("Retry-After")
     try:
-        return float(raw) if raw is not None else None
+        return max(float(raw), 0.0) if raw is not None else None
     except ValueError:
         return None
+
+
+def _should_retry(response: httpx.Response) -> bool:
+    """A retryable status whose requested wait (if any) is short enough to sleep through."""
+    if response.status_code not in _RETRY_STATUSES:
+        return False
+    hinted = _retry_after(response)
+    return hinted is None or hinted <= MAX_RETRY_AFTER
 
 
 def _backoff(attempt: int, response: Optional[httpx.Response]) -> float:
     if response is not None:
         hinted = _retry_after(response)
         if hinted is not None:
-            return min(max(hinted, 0.0), 30.0)
+            return min(hinted, MAX_RETRY_AFTER)
     return min(0.5 * (2**attempt), 8.0) + random.uniform(0, 0.25)
 
 
@@ -180,9 +190,7 @@ class KoteCharts(_Base):
             except httpx.TransportError as exc:
                 if attempt >= self.max_retries:
                     raise APIConnectionError(f"could not reach {self.base_url}: {exc}") from exc
-            if response is not None and (
-                response.status_code not in _RETRY_STATUSES or attempt >= self.max_retries
-            ):
+            if response is not None and (attempt >= self.max_retries or not _should_retry(response)):
                 return _unwrap(response)
             time.sleep(_backoff(attempt, response))
             attempt += 1
@@ -265,9 +273,7 @@ class AsyncKoteCharts(_Base):
             except httpx.TransportError as exc:
                 if attempt >= self.max_retries:
                     raise APIConnectionError(f"could not reach {self.base_url}: {exc}") from exc
-            if response is not None and (
-                response.status_code not in _RETRY_STATUSES or attempt >= self.max_retries
-            ):
+            if response is not None and (attempt >= self.max_retries or not _should_retry(response)):
                 return _unwrap(response)
             await asyncio.sleep(_backoff(attempt, response))
             attempt += 1

@@ -6,7 +6,11 @@ from typing import Optional
 
 
 class KoteChartsError(Exception):
-    """Base class for every error raised by this package."""
+    """Base class for every error raised by this package.
+
+    ``retry_after`` is the server's ``Retry-After`` hint in seconds when it sent one
+    (429 and 503 responses), otherwise ``None``.
+    """
 
     def __init__(
         self,
@@ -15,12 +19,14 @@ class KoteChartsError(Exception):
         status: Optional[int] = None,
         code: Optional[str] = None,
         request_id: Optional[str] = None,
+        retry_after: Optional[float] = None,
     ) -> None:
         super().__init__(message)
         self.message = message
         self.status = status
         self.code = code
         self.request_id = request_id
+        self.retry_after = retry_after
 
     def __repr__(self) -> str:  # pragma: no cover - cosmetic
         return f"{type(self).__name__}(status={self.status!r}, code={self.code!r}, message={self.message!r})"
@@ -49,13 +55,9 @@ class NotFoundError(KoteChartsError):
 class RateLimitError(KoteChartsError):
     """429 — rate limit exceeded (3 requests/second per key). ``retry_after`` is in seconds."""
 
-    def __init__(self, message: str, *, retry_after: Optional[float] = None, **kw) -> None:  # type: ignore[no-untyped-def]
-        super().__init__(message, **kw)
-        self.retry_after = retry_after
-
 
 class ServiceUnavailableError(KoteChartsError):
-    """503 — storage temporarily unavailable; retry later."""
+    """503 — temporarily unavailable or busy; retry after ``retry_after`` seconds when it is set."""
 
 
 _BY_STATUS = {

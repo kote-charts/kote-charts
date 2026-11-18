@@ -5,11 +5,15 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { remoteHeaders } from '../dist/index.js';
+import { remoteHeaders, USER_AGENT, VERSION } from '../dist/index.js';
 
-test('Bearer header only when KOTE_API_KEY is set', () => {
-  assert.deepEqual(remoteHeaders({}), {});
-  assert.deepEqual(remoteHeaders({ KOTE_API_KEY: ' kote_abc ' }), { Authorization: 'Bearer kote_abc' });
+test('names itself on every request; Bearer header only when KOTE_API_KEY is set', () => {
+  assert.equal(USER_AGENT, `kotecharts-mcp/${VERSION}`);
+  assert.deepEqual(remoteHeaders({}), { 'User-Agent': USER_AGENT });
+  assert.deepEqual(remoteHeaders({ KOTE_API_KEY: ' kote_abc ' }), {
+    'User-Agent': USER_AGENT,
+    Authorization: 'Bearer kote_abc',
+  });
 });
 
 const url = process.env.KOTE_MCP_URL;

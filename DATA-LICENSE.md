@@ -24,5 +24,9 @@ and the metric catalog — is governed by section 12 of the
 - **No warranty.** Metrics are heuristic estimates (entity labels in particular); read each
   metric's `limitations` (`GET /api/v1/metrics/{id}`) before drawing conclusions.
 - **Not financial advice.**
-- Rate limits: 3 requests/second per API key; 60 requests/minute per IP on the keyless MCP
+- Rate limits: 3 requests/second per API key; 60 tool calls/minute per IP on the keyless MCP
   endpoint. Please cache what you fetch.
+- Programmatic access goes through the documented interfaces — the REST API
+  (`/api/v1/public/*`), the MCP server and the metric catalog (`/api/v1/metrics`). The requests the
+  website makes for its own pages are not a public API: they are undocumented, may change without
+  notice and are limited separately.

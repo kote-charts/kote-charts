@@ -18,6 +18,7 @@ from kotecharts import (
     KoteChartsError,
     NotFoundError,
     RateLimitError,
+    ServiceUnavailableError,
 )
 
 KEY = "kote_" + "x" * 32
@@ -152,6 +153,50 @@ def test_gives_up_after_max_retries_with_retry_after(monkeypatch: pytest.MonkeyP
     assert info.value.retry_after == 2.0
 
 
+def test_a_wait_longer_than_the_cap_is_raised_at_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    sleeps: List[float] = []
+    monkeypatch.setattr(kotecharts._client.time, "sleep", lambda s: sleeps.append(s))
+    calls = {"n": 0}
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        return httpx.Response(
+            429,
+            headers={"Retry-After": "3600"},
+            json={"success": False, "error": {"code": "RATE_LIMIT", "message": "come back later"}},
+        )
+
+    with pytest.raises(RateLimitError) as info:
+        client(handler).chart("mvrv-z-score")
+    # Retrying sooner cannot succeed: no sleep, no second request, the hint goes to the caller.
+    assert calls["n"] == 1
+    assert sleeps == []
+    assert info.value.retry_after == 3600.0
+
+
+def test_retries_a_busy_503_and_exposes_its_retry_after(monkeypatch: pytest.MonkeyPatch) -> None:
+    sleeps: List[float] = []
+    monkeypatch.setattr(kotecharts._client.time, "sleep", lambda s: sleeps.append(s))
+    busy = httpx.Response(
+        503,
+        headers={"Retry-After": "2"},
+        json={"success": False, "error": {"code": "SERVICE_UNAVAILABLE", "message": "busy"}},
+    )
+    calls = {"n": 0}
+
+    def recovers(req: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        return busy if calls["n"] == 1 else ok(SERIES)
+
+    assert client(recovers).chart("mvrv-z-score").id == "mvrv-z-score"
+    assert sleeps == [2.0]
+
+    with pytest.raises(ServiceUnavailableError) as info:
+        client(lambda req: busy, max_retries=0).chart("mvrv-z-score")
+    assert info.value.retry_after == 2.0
+    assert info.value.code == "SERVICE_UNAVAILABLE"
+
+
 def test_to_pandas_indexes_by_utc_time() -> None:
     pd = pytest.importorskip("pandas")
     data = client(lambda r: ok(SERIES)).chart("mvrv-z-score")
@@ -189,4 +234,4 @@ def test_base_url_override_and_trailing_slash() -> None:
 
 
 def test_version_is_exposed() -> None:
-    assert json.loads(json.dumps(kotecharts.__version__)) == "0.2.0"
+    assert json.loads(json.dumps(kotecharts.__version__)) == "0.2.1"

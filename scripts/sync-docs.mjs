@@ -13,9 +13,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const base = (process.env.KOTE_BASE_URL ?? 'https://kotecharts.com').replace(/\/$/, '');
 const check = process.argv.includes('--check');
 const PUBLIC = 'https://kotecharts.com';
+// Names itself so the service can tell docs generation apart from real usage.
+const USER_AGENT = 'kote-charts-contract-docs/1 (+https://github.com/kote-charts/kote-charts)';
 
 async function getJson(path, init) {
-  const res = await fetch(`${base}${path}`, { ...init, signal: AbortSignal.timeout(60_000) });
+  const res = await fetch(`${base}${path}`, {
+    ...init,
+    headers: { 'user-agent': USER_AGENT, ...(init?.headers ?? {}) },
+    signal: AbortSignal.timeout(60_000),
+  });
   if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
   return res.json();
 }
@@ -39,7 +45,7 @@ const header = (title) =>
 const init = await rpc('initialize', {
   protocolVersion: '2025-06-18',
   capabilities: {},
-  clientInfo: { name: 'kote-charts-docs', version: '1' },
+  clientInfo: { name: 'kote-charts-contract-docs', version: '1' },
 });
 const { tools } = await rpc('tools/list');
 const { resources } = await rpc('resources/list');
@@ -49,7 +55,8 @@ const { prompts } = await rpc('prompts/list');
 const mcp = [header('MCP server reference')];
 mcp.push(
   `- **Endpoint:** \`POST ${PUBLIC}/api/v1/mcp\` — Streamable HTTP, stateless, JSON responses.`,
-  '- **Auth:** none required (60 requests/minute per IP). Optional API key as `Authorization: Bearer kote_…` → 3 requests/second.',
+  '- **Auth:** none required. Optional API key as `Authorization: Bearer kote_…`.',
+  '- **Limits:** without a key, 60 tool calls per minute per IP — `tools/call` and reads of `kote://charts/{id}`; the handshake and discovery requests (`initialize`, `tools/list`, `resources/list`, `prompts/*`, `ping`, the catalog and methodology resources) are not counted against it. With a key, 3 requests per second. Each message of a JSON-RPC batch counts separately. A refused request answers HTTP 429 with `Retry-After`; `X-RateLimit-Limit` / `X-RateLimit-Remaining` are on every response.',
   '- **Headers:** clients must send `Accept: application/json, text/event-stream`.',
   `- **Server:** \`${init.serverInfo.name}\` ${init.serverInfo.version} — ${init.serverInfo.title ?? ''}`,
   '- **Registry:** `com.kotecharts/charts` (official MCP Registry). stdio bridge: `npx -y kotecharts-mcp`.',

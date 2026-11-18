@@ -24,8 +24,10 @@ kc.latest("exchange-netflow")             # newest closed day
   (`.series`, `.fields`, `.latest`, `.to_pandas()`).
 - `latest(id)`, `usage()`; `AsyncKoteCharts` has the same methods for `asyncio`.
 
-Errors are typed (`AuthenticationError`, `NotFoundError`, `RateLimitError` with `.retry_after`, …);
-429/503 are retried with backoff (honouring `Retry-After`). The limit is 3 requests per second per key.
+Errors are typed (`AuthenticationError`, `NotFoundError`, `RateLimitError`, `ServiceUnavailableError`, …)
+and carry `.status`, `.code`, `.request_id` and `.retry_after`. 429/503 are retried with backoff,
+honouring `Retry-After`; a requested wait longer than 30 s is raised at once instead of slept through.
+The limit is 3 requests per second per key.
 
 Data: **non-commercial use only, with attribution** — cite "Kote Charts" and link `https://kotecharts.com/c/{id}`; commercial use requires prior written permission ([data licence](https://kotecharts.com/license)). Educational only, not financial advice.
 Full docs: <https://github.com/kote-charts/kote-charts>.

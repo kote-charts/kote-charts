@@ -17,7 +17,8 @@ clients with remote-MCP support can use the URL directly.
   `kote://charts/{id}`, `kote://catalog`, `kote://methodology`; prompts `explain_metric`,
   `cycle_position_brief` — whatever the hosted server advertises, so the proxy never goes stale.
 - `KOTE_API_KEY` (optional, from https://kotecharts.com/account): 3 requests/second instead of
-  60/minute per IP. `KOTE_MCP_URL` overrides the endpoint.
+  60 tool calls/minute per IP (the handshake and discovery requests are not counted against it).
+  `KOTE_MCP_URL` overrides the endpoint.
 
 Data licence: non-commercial use only, with attribution (cite "Kote Charts" and link
 `https://kotecharts.com/c/{id}`); commercial use requires prior written permission

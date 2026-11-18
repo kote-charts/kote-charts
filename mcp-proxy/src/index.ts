@@ -5,7 +5,7 @@
 //
 //   npx -y kotecharts-mcp
 //
-// Env: KOTE_API_KEY (optional: an API key → 3 req/s instead of 60 req/min per IP),
+// Env: KOTE_API_KEY (optional: an API key → 3 requests/s instead of 60 tool calls/min per IP),
 //      KOTE_MCP_URL  (optional: override the remote endpoint).
 //
 // Nothing is computed locally: tools, resources and prompts are whatever the
@@ -24,12 +24,16 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-export const VERSION = '0.1.2';
+export const VERSION = '0.1.3';
 export const DEFAULT_URL = 'https://kotecharts.com/api/v1/mcp';
+
+// Every request to the hosted server names this bridge, so it is told apart from
+// anonymous scripts (the default Node user agent says nothing).
+export const USER_AGENT = `kotecharts-mcp/${VERSION}`;
 
 export function remoteHeaders(env: NodeJS.ProcessEnv): Record<string, string> {
   const key = env['KOTE_API_KEY']?.trim();
-  return key ? { Authorization: `Bearer ${key}` } : {};
+  return { 'User-Agent': USER_AGENT, ...(key ? { Authorization: `Bearer ${key}` } : {}) };
 }
 
 export async function connectRemote(env: NodeJS.ProcessEnv = process.env): Promise<Client> {

@@ -21,7 +21,7 @@ with attribution; commercial use needs a licence — see [Data, license and attr
 
 | | |
 |---|---|
-| **MCP server** | `https://kotecharts.com/api/v1/mcp` — Streamable HTTP, **no key** (60 req/min per IP; an API key gives 3 req/s) |
+| **MCP server** | `https://kotecharts.com/api/v1/mcp` — Streamable HTTP, **no key** (60 tool calls/min per IP; an API key gives 3 req/s) |
 | **REST API** | `https://kotecharts.com/api/v1/public/charts/{id}` — API key, 3 req/s |
 | **Metric catalog** | `https://kotecharts.com/api/v1/metrics` — formula, fields + units, input categories, cadence, limitations, freshness — **no key** |
 | **Python** | `pip install kotecharts` → [python/](python/) |
@@ -106,17 +106,6 @@ The full, always-current list: [`docs/metrics.md`](docs/metrics.md) (generated) 
   The MIT licence above covers the code only, not the data.
 - Educational only — **not financial advice**. Metrics are descriptive, not forecasts; read each
   metric's `limitations`.
-
-## Verify independently
-
-- **Contract tests** — [`contract/`](contract/) checks production against the published OpenAPI
-  schemas, data freshness, the licence on every response and one public chart count across the site,
-  the API and MCP. Keyless; runs daily in [CI](.github/workflows/contract.yml) and locally with
-  `node --test contract/*.test.mjs` (Node ≥ 20, no dependencies; `KOTE_BASE_URL` to point elsewhere).
-- **Service status** — [kotecharts.com/status](https://kotecharts.com/status) and
-  `GET https://kotecharts.com/api/v1/status` (no key): components, analysed block, stale charts.
-- **Change history** — [kotecharts.com/changelog](https://kotecharts.com/changelog) (API, MCP, data
-  corrections, incidents; Atom feed) and this repo's [CHANGELOG.md](CHANGELOG.md) for SDK releases.
 
 ## Verify independently
 

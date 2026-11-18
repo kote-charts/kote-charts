@@ -30,7 +30,7 @@ export type MetricCatalog = Schemas['MetricCatalog'];
 export type ApiErrorBody = Schemas['ApiError'];
 export type { components, paths } from './openapi';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.2.1';
 export const DEFAULT_BASE_URL = 'https://kotecharts.com';
 
 export interface KoteChartsOptions {
@@ -38,7 +38,10 @@ export interface KoteChartsOptions {
   apiKey?: string;
   /** Defaults to https://kotecharts.com (or process.env.KOTE_BASE_URL). */
   baseUrl?: string;
-  /** Retries for 429 / 502 / 503 / 504 and network errors. Default 3. */
+  /**
+   * Retries for 429 / 502 / 503 / 504 and network errors. Default 3. A response whose
+   * Retry-After is longer than 30 s is thrown at once instead of being retried.
+   */
   maxRetries?: number;
   /** Per-request timeout in ms. Default 30 000. */
   timeoutMs?: number;
@@ -62,7 +65,7 @@ export class KoteChartsError extends Error {
   readonly status: number | undefined;
   readonly code: string | undefined;
   readonly requestId: string | undefined;
-  /** Seconds to wait (429 only). */
+  /** Seconds to wait — the server's Retry-After hint, when it sent one (429 / 503). */
   readonly retryAfter: number | undefined;
 
   constructor(
@@ -79,6 +82,10 @@ export class KoteChartsError extends Error {
 }
 
 const RETRY_STATUSES = new Set([429, 502, 503, 504]);
+// The longest server-requested wait (Retry-After) the client sleeps through by itself.
+// A longer hint is thrown at once: retrying sooner cannot succeed, and how long to wait
+// is then the caller's decision (error.retryAfter).
+const MAX_RETRY_AFTER_SEC = 30;
 // process is optional (browsers, Deno without --allow-env) — read it defensively.
 const env = (name: string): string | undefined =>
   (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.[name];
@@ -191,7 +198,7 @@ export class KoteCharts {
           throw new KoteChartsError(`could not reach ${this.baseUrl}: ${(err as Error).message}`);
         }
       }
-      if (res && (!RETRY_STATUSES.has(res.status) || attempt >= this.maxRetries)) {
+      if (res && (attempt >= this.maxRetries || !shouldRetry(res))) {
         return unwrap<T>(res);
       }
       await sleep(backoffMs(attempt, res));
@@ -201,13 +208,20 @@ export class KoteCharts {
 
 function retryAfterSec(res: Response | undefined): number | undefined {
   const raw = res?.headers.get('retry-after');
-  const n = raw === null || raw === undefined ? NaN : Number(raw);
-  return Number.isFinite(n) ? n : undefined;
+  const n = raw === null || raw === undefined || raw.trim() === '' ? NaN : Number(raw);
+  return Number.isFinite(n) ? Math.max(n, 0) : undefined;
+}
+
+/** A retryable status whose requested wait (if any) is short enough to sleep through. */
+function shouldRetry(res: Response): boolean {
+  if (!RETRY_STATUSES.has(res.status)) return false;
+  const hinted = retryAfterSec(res);
+  return hinted === undefined || hinted <= MAX_RETRY_AFTER_SEC;
 }
 
 function backoffMs(attempt: number, res: Response | undefined): number {
   const hinted = retryAfterSec(res);
-  if (hinted !== undefined) return Math.min(Math.max(hinted, 0), 30) * 1000;
+  if (hinted !== undefined) return Math.min(hinted, MAX_RETRY_AFTER_SEC) * 1000;
   return Math.min(500 * 2 ** attempt, 8000) + Math.random() * 250;
 }
 
@@ -224,7 +238,7 @@ async function unwrap<T>(res: Response): Promise<T> {
       status: res.status,
       ...(err?.code !== undefined ? { code: err.code } : {}),
       ...(err?.requestId !== undefined ? { requestId: err.requestId } : {}),
-      ...(res.status === 429 && retryAfterSec(res) !== undefined ? { retryAfter: retryAfterSec(res) } : {}),
+      ...(retryAfterSec(res) !== undefined ? { retryAfter: retryAfterSec(res) } : {}),
     });
   }
   if (body && typeof body === 'object' && 'success' in body && 'data' in body) {

@@ -20,7 +20,8 @@ const latest = await kc.latest('exchange-netflow');    // newest closed day
 - Zero dependencies, native `fetch` (Node 18+, browsers, Deno, Bun); ESM + CommonJS; types
   generated from the public OpenAPI document.
 - `metrics()` / `metric(id)` (no key), `charts()`, `chart(id, query)`, `latest(id)`, `usage()`.
-- Retries 429/5xx honouring `Retry-After`; errors are `KoteChartsError` with `status`, `code`,
-  `requestId`, `retryAfter`. Limit: 3 requests per second per key.
+- Retries 429/5xx honouring `Retry-After` (a requested wait longer than 30 s is thrown at once
+  instead of slept through); errors are `KoteChartsError` with `status`, `code`, `requestId`,
+  `retryAfter`. Limit: 3 requests per second per key.
 
 Data: **non-commercial use only, with attribution** — cite "Kote Charts" and link `https://kotecharts.com/c/{id}`; commercial use requires prior written permission ([data licence](https://kotecharts.com/license)). Not financial advice. Docs: <https://github.com/kote-charts/kote-charts>.
