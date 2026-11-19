@@ -4,6 +4,17 @@ SDK, MCP-bridge and registry releases. Every public change to the service itself
 data corrections, methodology, incidents — is listed at https://kotecharts.com/changelog
 (Atom: https://kotecharts.com/changelog/feed.xml).
 
+## 2026-11-19 — data follows every block
+
+- Hosted service: flow and spending metrics (SOPR, adjusted SOPR, realized profit/loss, coin days
+  destroyed, spent and transfer volume, issuance, exchange / miner / fund / whale flows) are now
+  recalculated and published after **every Bitcoin block**, typically within a couple of minutes of
+  the block being mined (`granularity=5m`, last 30 days); network-activity charts refresh every
+  30 minutes. Formulas, values and response shapes are unchanged — no SDK or MCP release is needed.
+- README: new section "Data that follows every block" with the keyless freshness check
+  (`GET /api/v1/status` → `dataPipeline`) and the per-response block watermark (`asOf`,
+  `watermark`); [docs/methodology.md](docs/methodology.md) states the cadence.
+
 ## 2026-11-18 — limits counted per call
 
 - Hosted MCP server 1.2.1: the keyless limit is counted in **tool calls** — 60 per minute per IP for

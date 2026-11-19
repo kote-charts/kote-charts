@@ -14,9 +14,13 @@ fields and units, input categories, update cadence, limitations, freshness).
 - **Entities:** addresses are grouped with common-input-ownership clustering and labelled (exchanges,
   miners, funds) from third-party and manually verified labels. Labels are heuristic; exchange and
   whale series are restated from genesis when the label snapshot changes.
-- **Cadence:** daily charts settle after the UTC day closes; selected on-chain metrics also publish
-  per-block 5-minute buckets for the last 30 days. Every metric reports `lastT`, `publishedAt` and
-  the analysed block height.
+- **Cadence:** processing follows the chain block by block. Flow and spending metrics (SOPR,
+  adjusted SOPR, realized profit/loss, coin days destroyed, spent and transfer volume, issuance,
+  exchange / miner / fund / whale flows) are republished after every Bitcoin block — typically
+  within a couple of minutes — as 5-minute buckets for the last 30 days. Network-activity charts
+  refresh every 30 minutes; daily values are finalised after the UTC day closes; market inputs
+  refresh once a day. Every metric reports `lastT`, `publishedAt` and the analysed block height;
+  a chart response carries `asOf` and `watermark` (the block it reflects).
 - **Intervals:** closed-only. `includePartial=true` (daily) appends the open UTC day, flagged
   `partial: true`; never sum it with closed days.
 - **Limitations:** on-chain data does not see trades inside exchanges; 2009–2010 prices are sparse;

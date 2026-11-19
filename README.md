@@ -24,6 +24,7 @@ with attribution; commercial use needs a licence — see [Data, license and attr
 | **MCP server** | `https://kotecharts.com/api/v1/mcp` — Streamable HTTP, **no key** (60 tool calls/min per IP; an API key gives 3 req/s) |
 | **REST API** | `https://kotecharts.com/api/v1/public/charts/{id}` — API key, 3 req/s |
 | **Metric catalog** | `https://kotecharts.com/api/v1/metrics` — formula, fields + units, input categories, cadence, limitations, freshness — **no key** |
+| **Freshness** | Flow and spending metrics follow **every Bitcoin block** — typically within a couple of minutes — as 5-minute buckets; see [Data that follows every block](#data-that-follows-every-block) |
 | **Python** | `pip install kotecharts` → [python/](python/) |
 | **TypeScript / JS** | `npm i kotecharts` → [typescript/](typescript/) |
 | **stdio MCP** | `npx -y kotecharts-mcp` → [mcp-proxy/](mcp-proxy/) |
@@ -66,6 +67,35 @@ import { KoteCharts } from 'kotecharts';
 const kc = new KoteCharts(); // reads KOTE_API_KEY
 const nupl = await kc.latest('nupl');
 ```
+
+## Data that follows every block
+
+Processing runs block by block. When Bitcoin mines a block, the flow and spending metrics —
+SOPR, adjusted SOPR, realized profit/loss, coin days destroyed, spent volume, transfer volume,
+issuance, and exchange, miner, fund and whale flows — are recalculated and published, typically
+within a couple of minutes of the block being mined. They are served as 5-minute buckets for the
+last 30 days (`granularity=5m`), and their open day moves with each block. Network-activity charts
+(transactions, fees, addresses) are refreshed every 30 minutes; daily values are finalised after
+the UTC day closes; market inputs refresh once a day.
+
+Every answer says how fresh it is, so an agent or a script never has to guess:
+
+```bash
+# Which block does the data reflect right now? (no key)
+curl -s https://kotecharts.com/api/v1/status \
+  | jq '.data.components[] | select(.id == "dataPipeline")'
+# → {"id":"dataPipeline","status":"operational","analysedBlockHeight":976575,"processedAt":"…","ageMinutes":1}
+
+# The newest 5-minute buckets of SOPR and the block they come from
+curl -s -H "Authorization: Bearer $KOTE_API_KEY" \
+  "https://kotecharts.com/api/v1/public/charts/sopr?granularity=5m" \
+  | jq '.data | {asOf, block: .watermark.lastBlockHeight, latest: .series[-3:]}'
+```
+
+`asOf` is the time of that block and `watermark` its height and hash; `GET /api/v1/metrics/{id}`
+reports `publishedAt`, `lastT` and `analysedBlockHeight` for every metric; the MCP tools
+`get_latest` and `describe_chart` carry the same fields. The latest block and the charts that
+changed with it are shown live on [kotecharts.com](https://kotecharts.com).
 
 ## What's inside
 
