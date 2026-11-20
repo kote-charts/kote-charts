@@ -4,8 +4,15 @@ SDK, MCP-bridge and registry releases. Every public change to the service itself
 data corrections, methodology, incidents — is listed at https://kotecharts.com/changelog
 (Atom: https://kotecharts.com/changelog/feed.xml).
 
-## 2026-11-20 — "new data every block" in the package descriptions
+## 2026-11-20 — "new data every block": MCP server 1.2.2, registry 1.2.2, SDKs 0.2.2
 
+- Hosted MCP server 1.2.2: the server instructions state the cadence — flow and spending metrics are
+  republished after each Bitcoin block as 5-minute buckets (last 30 days), network-activity charts
+  every 30 minutes, daily series once the UTC day is closed. Tools, arguments, results and limits are
+  unchanged. MCP Registry `com.kotecharts/charts` 1.2.2 carries the same description and pins
+  `kotecharts-mcp` 0.1.4 (the 0.1.3 behaviour — it names itself with a `User-Agent` — plus docs).
+- The public OpenAPI description states the same cadence;
+  [docs/mcp.md](docs/mcp.md) and [docs/rest-api.md](docs/rest-api.md) regenerated from the live service.
 - `kotecharts` 0.2.2 (Python, npm) and `kotecharts-mcp` 0.1.4: documentation and package
   descriptions only — the READMEs state that flow and spending metrics are republished after every
   Bitcoin block as 5-minute buckets (`granularity="5m"` / `'5m'`, last 30 days) and show how to read

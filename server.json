@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.kotecharts/charts",
   "title": "Kote Charts — Bitcoin on-chain analytics",
-  "description": "Bitcoin on-chain analytics API & MCP server: MVRV, NUPL, SOPR, exchange flows, whales",
-  "version": "1.2.1",
+  "description": "Bitcoin on-chain analytics API & MCP server, new data every block: MVRV, SOPR, exchange/whale flows",
+  "version": "1.2.2",
   "websiteUrl": "https://kotecharts.com/mcp",
   "repository": {
     "url": "https://github.com/kote-charts/kote-charts",
@@ -19,7 +19,7 @@
     {
       "registryType": "npm",
       "identifier": "kotecharts-mcp",
-      "version": "0.1.0",
+      "version": "0.1.4",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {

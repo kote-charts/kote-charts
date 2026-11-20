@@ -8,7 +8,7 @@
 [![CI](https://github.com/kote-charts/kote-charts/actions/workflows/ci.yml/badge.svg)](https://github.com/kote-charts/kote-charts/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
 
-**110+ charts, history since 2009: MVRV, NUPL, SOPR, exchange flows and whale analytics** —
+**110+ charts, history since 2009, new data every block: MVRV, NUPL, SOPR, exchange flows and whale analytics** —
 computed from our own Bitcoin full node, with a public REST API, a keyless MCP server for
 AI agents, and machine-readable methodology for every metric. No charge for non-commercial use
 with attribution; commercial use needs a licence — see [Data, license and attribution](#data-license-and-attribution).
