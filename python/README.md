@@ -1,7 +1,7 @@
 # kotecharts — Python SDK
 
-**Bitcoin On-Chain Analytics API & MCP Server** — 110+ charts, history since 2009:
-MVRV, NUPL, SOPR, exchange flows and whale analytics, computed from our own Bitcoin full node.
+**Bitcoin On-Chain Analytics API & MCP Server** — 110+ charts, history since 2009, new data every
+block: MVRV, NUPL, SOPR, exchange flows and whale analytics, computed from our own Bitcoin full node.
 
 ```bash
 pip install kotecharts            # add [pandas] for DataFrames
@@ -15,7 +15,13 @@ kc = KoteCharts()                         # reads KOTE_API_KEY (key: https://kot
 kc.metric("mvrv-z-score")["formula"]      # methodology — no key needed
 df = kc.chart("mvrv-z-score", start="2020-01-01", granularity="week").to_pandas()
 kc.latest("exchange-netflow")             # newest closed day
+kc.chart("sopr", granularity="5m").latest # newest 5-minute bucket — follows every block
 ```
+
+Flow and spending metrics (SOPR, realized profit/loss, coin days destroyed, exchange, miner, fund and
+whale flows) are republished after **every Bitcoin block**, typically within a couple of minutes, as
+5-minute buckets for the last 30 days (`granularity="5m"`). Network-activity charts refresh every
+30 minutes; daily values are closed UTC days. Each response carries `asOf` and the block `watermark`.
 
 - `metrics()` / `metric(id)` — machine-readable methodology (formula, fields + units, input
   categories, update cadence, limitations, freshness). **No key.**

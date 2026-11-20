@@ -2,8 +2,9 @@
 
 A local stdio MCP server that forwards to the hosted **Kote Charts** MCP server
 (`https://kotecharts.com/api/v1/mcp`): Bitcoin on-chain analytics — MVRV, NUPL, SOPR,
-exchange flows and whale analytics, history since 2009. For clients that only run local servers;
-clients with remote-MCP support can use the URL directly.
+exchange flows and whale analytics, history since 2009, new data every block (flow and spending
+metrics are republished after each Bitcoin block as 5-minute buckets). For clients that only run
+local servers; clients with remote-MCP support can use the URL directly.
 
 ```json
 {

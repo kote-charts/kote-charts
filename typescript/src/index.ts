@@ -30,7 +30,7 @@ export type MetricCatalog = Schemas['MetricCatalog'];
 export type ApiErrorBody = Schemas['ApiError'];
 export type { components, paths } from './openapi';
 
-export const VERSION = '0.2.1';
+export const VERSION = '0.2.2';
 export const DEFAULT_BASE_URL = 'https://kotecharts.com';
 
 export interface KoteChartsOptions {

@@ -4,6 +4,13 @@ SDK, MCP-bridge and registry releases. Every public change to the service itself
 data corrections, methodology, incidents — is listed at https://kotecharts.com/changelog
 (Atom: https://kotecharts.com/changelog/feed.xml).
 
+## 2026-11-20 — "new data every block" in the package descriptions
+
+- `kotecharts` 0.2.2 (Python, npm) and `kotecharts-mcp` 0.1.4: documentation and package
+  descriptions only — the READMEs state that flow and spending metrics are republished after every
+  Bitcoin block as 5-minute buckets (`granularity="5m"` / `'5m'`, last 30 days) and show how to read
+  them. No code changes.
+
 ## 2026-11-19 — data follows every block
 
 - Hosted service: flow and spending metrics (SOPR, adjusted SOPR, realized profit/loss, coin days

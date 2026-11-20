@@ -24,7 +24,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
-export const VERSION = '0.1.3';
+export const VERSION = '0.1.4';
 export const DEFAULT_URL = 'https://kotecharts.com/api/v1/mcp';
 
 // Every request to the hosted server names this bridge, so it is told apart from
