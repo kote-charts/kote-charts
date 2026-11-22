@@ -67,7 +67,7 @@ _Read-only._
 - `kote://catalog` — Metric catalog (JSON) (application/json): Every public chart: id, title, category, formula, fields with units, input categories and limitations.
 - `kote://methodology` — How Kote Charts computes its data (text/markdown): Data sources by category, units, update cadence, limitations and citation policy.
 - `kote://charts/{id}` — Chart methodology (text/markdown): What a chart shows, how to read it, caveats, formula, page URL and data access.
-- 114 chart resources are listed by `resources/list`.
+- 115 chart resources are listed by `resources/list`.
 
 ## Prompts
 
