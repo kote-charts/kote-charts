@@ -4,6 +4,20 @@ SDK, MCP-bridge and registry releases. Every public change to the service itself
 data corrections, methodology, incidents — is listed at https://kotecharts.com/changelog
 (Atom: https://kotecharts.com/changelog/feed.xml).
 
+## 2026-11-26 — spreadsheets, notebooks, one credit line for apps
+
+- New [Google Sheets template](examples/google-sheets/) (Apps Script): `=KOTE_LATEST`,
+  `=KOTE_SERIES`, `=KOTE_CHARTS` (keyless) and `=KOTE_CREDIT`, with a 10-minute cache and `429`
+  retries for the 3 requests/second key limit.
+- New [Jupyter quickstart](examples/jupyter/quickstart.ipynb) (opens in Colab): methodology without a
+  key, MVRV Z-Score across halving cycles, today's readings, citations.
+- Data licence wording (Terms §12, [DATA-LICENSE.md](DATA-LICENSE.md), the skill): apps, bots,
+  dashboards and notebooks that show the data to others may carry one visible credit,
+  `Data: Kote Charts — kotecharts.com`, instead of a link per chart; publications still link each
+  chart page; private use needs no credit. Nothing else in the licence changed.
+- The metric catalog's `updateCadence` now names three tiers — per-block, every 30 minutes, daily.
+  No SDK, MCP-bridge or registry release: code and tools are unchanged.
+
 ## 2026-11-20 — "new data every block": MCP server 1.2.2, registry 1.2.2, SDKs 0.2.2
 
 - Hosted MCP server 1.2.2: the server instructions state the cadence — flow and spending metrics are

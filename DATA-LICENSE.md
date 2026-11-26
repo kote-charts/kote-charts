@@ -8,10 +8,18 @@ and the metric catalog — is governed by section 12 of the
 
 - **Non-commercial use at no charge** — personal, educational, research and other non-commercial
   purposes.
-- **Attribution is required** — cite "Kote Charts" and link the chart page, e.g.
-  `Kote Charts — "MVRV Z-Score", https://kotecharts.com/c/mvrv-z-score`. Every API and MCP response
-  carries `pageUrl`, a ready-made `cite` string and the `license` URL, plus the HTTP header
-  `Link: <https://kotecharts.com/license>; rel="license"`.
+- **Attribution is required:**
+  - **Publications** (articles, posts, threads, reports, videos, research) cite "Kote Charts" and
+    link the page of each chart they show or quote, e.g.
+    `Kote Charts — "MVRV Z-Score", https://kotecharts.com/c/mvrv-z-score`.
+  - **Apps, bots, dashboards, notebooks and scripts that show the data to other people** may instead
+    carry one visible credit — `Data: Kote Charts — kotecharts.com` (linked where links work) — for
+    example in a footer, an about/help screen or the bot's description.
+  - **Private use nobody else sees** (your own scripts, notes, spreadsheets, dashboards) needs no credit.
+
+  Every API and MCP response carries `pageUrl`, a ready-made `cite` string and the `license` URL,
+  plus the HTTP header `Link: <https://kotecharts.com/license>; rel="license"`. A credit never makes
+  a commercial use non-commercial: a trading, investment or signal bot still needs permission.
 - **Commercial use requires prior written permission** — for example use in or for a product or
   service that is sold or funded by subscriptions or advertising, paid research or newsletters built
   on the data, trading or investment services, or redistributing / reselling the data. Request it at

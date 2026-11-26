@@ -35,3 +35,26 @@ jobs:
       - run: npm ci && npm run build
       - run: npm test
         env: { KOTE_MCP_URL: https://kotecharts.com/api/v1/mcp }
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Notebook is valid and its code compiles
+        run: |
+          pip install nbformat
+          python - <<'PY'
+          import nbformat, pathlib
+          for path in pathlib.Path("examples").rglob("*.ipynb"):
+              nb = nbformat.read(path, as_version=4)
+              nbformat.validate(nb)
+              assert all(not c.get("outputs") for c in nb.cells if c.cell_type == "code"), f"{path}: commit without outputs"
+              src = "\n".join(l for c in nb.cells if c.cell_type == "code" for l in c.source.splitlines() if not l.lstrip().startswith("%"))
+              compile(src, str(path), "exec")
+              print("ok", path)
+          PY
+      - name: Apps Script parses
+        run: for f in examples/google-sheets/*.gs; do cp "$f" "$RUNNER_TEMP/check.js" && node --check "$RUNNER_TEMP/check.js" && echo "ok $f"; done

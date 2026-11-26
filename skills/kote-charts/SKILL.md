@@ -47,7 +47,9 @@ separately.
 - Educational only: describe what the metric shows; never give buy/sell advice or price targets.
 - Licence: non-commercial use only, with attribution (cite "Kote Charts" and link the chart
   page); commercial use requires prior written permission — https://kotecharts.com/license.
-  If the user is building a commercial product on the data, tell them so.
+  If the user is building an app, bot or dashboard on the data, one visible credit
+  "Data: Kote Charts — kotecharts.com" is enough there; if it is a commercial product (paid,
+  ad-funded, trading or signal service), tell them it needs permission.
 
 ## Good starting metrics
 

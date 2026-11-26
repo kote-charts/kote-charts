@@ -68,6 +68,13 @@ const kc = new KoteCharts(); // reads KOTE_API_KEY
 const nupl = await kc.latest('nupl');
 ```
 
+**Spreadsheets and notebooks:** the [Google Sheets template](examples/google-sheets/) adds
+`=KOTE_LATEST("mvrv-z-score", "mvrvZ")` and `=KOTE_SERIES(…)` to any sheet, and the
+[Jupyter quickstart](examples/jupyter/quickstart.ipynb) runs in Colab
+([open](https://colab.research.google.com/github/kote-charts/kote-charts/blob/main/examples/jupyter/quickstart.ipynb)).
+Every chart page on [kotecharts.com](https://kotecharts.com/charts) also shows ready-made cURL,
+Python, JavaScript, Sheets and MCP snippets for that chart.
+
 ## Data that follows every block
 
 Processing runs block by block. When Bitcoin mines a block, the flow and spending metrics —
@@ -121,7 +128,7 @@ The full, always-current list: [`docs/metrics.md`](docs/metrics.md) (generated) 
 | [`python/`](python/) | `kotecharts` on PyPI — sync + async client, pandas helper |
 | [`typescript/`](typescript/) | `kotecharts` on npm — zero-dependency fetch client, types from OpenAPI |
 | [`mcp-proxy/`](mcp-proxy/) | `kotecharts-mcp` on npm — stdio ↔ hosted MCP bridge |
-| [`examples/`](examples/) | Python and TypeScript scripts, agent examples |
+| [`examples/`](examples/) | Python and TypeScript scripts, a Jupyter quickstart, a Google Sheets template, agent examples |
 | [`skills/kote-charts/`](skills/kote-charts/) | Agent Skill: how an agent should use and cite the data |
 | [`server.json`](server.json) | Official MCP Registry manifest (`com.kotecharts/charts`) |
 
@@ -129,9 +136,11 @@ The full, always-current list: [`docs/metrics.md`](docs/metrics.md) (generated) 
 
 - **Code** in this repository: [MIT](LICENSE).
 - **Data** from kotecharts.com: personal, educational, research and other **non-commercial** use
-  with **required attribution** — cite *"Kote Charts"* and link the chart page
+  with **required attribution** — publications cite *"Kote Charts"* and link the chart page
   `https://kotecharts.com/c/{id}` (every API and MCP answer carries `pageUrl`, a ready `cite` string and
-  the `license` URL). **Commercial use requires prior written permission** — see
+  the `license` URL); apps, bots, dashboards and notebooks that show the data to others may instead
+  carry one visible credit, *"Data: Kote Charts — kotecharts.com"*; private use nobody else sees
+  needs no credit. **Commercial use requires prior written permission** — see
   [DATA-LICENSE.md](DATA-LICENSE.md) and [kotecharts.com/license](https://kotecharts.com/license).
   The MIT licence above covers the code only, not the data.
 - Educational only — **not financial advice**. Metrics are descriptive, not forecasts; read each

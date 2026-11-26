@@ -2,6 +2,8 @@
 
 | Example | Needs |
 |---|---|
+| [jupyter/quickstart.ipynb](jupyter/quickstart.ipynb) — MVRV Z-Score cycles, today's readings, citations ([open in Colab](https://colab.research.google.com/github/kote-charts/kote-charts/blob/main/examples/jupyter/quickstart.ipynb)) | API key (catalog part keyless) |
+| [google-sheets/](google-sheets/) — `=KOTE_LATEST`, `=KOTE_SERIES`, `=KOTE_CHARTS` custom functions (Apps Script) | API key (`KOTE_CHARTS` keyless) |
 | [python/metric_catalog.py](python/metric_catalog.py) — list every metric with its formula and units | nothing (keyless) |
 | [python/mvrv_cycles.py](python/mvrv_cycles.py) — MVRV Z-Score peaks and troughs per cycle | API key, `kotecharts[pandas]` |
 | [python/exchange_netflow.py](python/exchange_netflow.py) — weekly exchange netflow, per venue | API key, `kotecharts[pandas]` |
